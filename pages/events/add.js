@@ -1,9 +1,10 @@
+import Layout from "@/components/layouts/Layout"
 
 const AddPage = () => {
   return (
-    <div>
+    <Layout title='Add new event'>
         <h1>Add Event</h1>
-    </div>
+    </Layout>
   )
 }
 
