@@ -1,10 +1,15 @@
+import { useRouter } from "next/router";
 
 const EventPage = () => {
-  return (
-    <div>
-        <h1>EventPage</h1>
-    </div>
-  )
-}
+  const router = useRouter();
 
-export default EventPage
+  return (  
+    <div>
+      <h1>EventPage</h1>
+      <h3>{router.query.slug}</h3>
+      <button onClick={() => router.push('/')}></button>
+    </div>
+  );
+};
+
+export default EventPage;
