@@ -7,7 +7,7 @@ import Link from "next/link";
 import { API_URL } from "@/config/index";
 
 import Layout from "@/components/layouts/Layout";
-import styles from "@/styles/AddEvent.module.css";
+import styles from "@/styles/Form.module.css";
 
 const AddEventPage = () => {
   const [values, setValues] = useState({

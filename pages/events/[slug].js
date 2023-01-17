@@ -51,6 +51,7 @@ const EventPage = ({ evt }) => {
           <div className={styles.image}>
             <Image
               src={evt.image.formats.medium.url}
+              alt={evt.name}
               width={960}
               height={600}
             />
