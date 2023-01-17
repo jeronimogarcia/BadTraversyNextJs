@@ -9,6 +9,7 @@ import Link from "next/link";
 import { API_URL } from "@/config/index";
 
 import Layout from "@/components/layouts/Layout";
+import Modal from "@/components/Modal";
 import styles from "@/styles/AddEvent.module.css";
 import Image from "next/image";
 
@@ -27,6 +28,7 @@ const EditEventPage = ({ evt }) => {
     evt.image ? evt.image.formats.thumbnail.url : null
   );
 
+  const [showModal, setShowModal] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e) => {
@@ -153,10 +155,14 @@ const EditEventPage = ({ evt }) => {
       )}
 
       <div>
-        <button className="btn-secondary">
+        <button className="btn-secondary btn-icon" onClick={()=>setShowModal(true)}>
           <FaImage /> Set image
         </button>
       </div>
+
+      <Modal show={showModal} onClose={()=>setShowModal(false)}>
+        Image Upload
+      </Modal>
     </Layout>
   );
 };
