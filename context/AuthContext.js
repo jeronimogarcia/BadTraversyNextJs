@@ -15,32 +15,29 @@ export const AuthProvider = ({ children }) => {
 
   // Login User
   const login = async ({ email: identifier, password }) => {
-    const res = await fetch (`${NEXT_URL}/api/login`, {
-      method: 'POST',
-      header: {
-        'Content-Type': 'application/json'
+    const res = await fetch(`${NEXT_URL}/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         identifier,
-        password
-      })
-    })
-    
-    const data = await res.json()
+        password,
+      }),
+    });
 
-    if(res.ok) {
-      setUser(data.user)
+    const data = await res.json();
+
+    if (res.ok) {
+      setUser(data.user);
     } else {
-      setError(data.message)
-      setError(null)
+      setError(data.message);
+      setError(null);
     }
-   
   };
 
   // Logout User
-  const logout = async () => {
-   
-  };
+  const logout = async () => {};
 
   // Check if user is logged in
   const checkUserLoggedIn = async (user) => {
@@ -48,10 +45,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{user, error, register, login, logout}}>
-        {children}
+    <AuthContext.Provider value={{ user, error, register, login, logout }}>
+      {children}
     </AuthContext.Provider>
-  )
+  );
 };
 
-export default AuthContext
+export default AuthContext;
