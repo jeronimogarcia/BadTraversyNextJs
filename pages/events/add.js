@@ -9,7 +9,6 @@ import { API_URL } from "@/config/index";
 
 import Layout from "@/components/layouts/Layout";
 import styles from "@/styles/Form.module.css";
-import { getServerSideProps } from ".";
 
 const AddEventPage = ({ token }) => {
   const [values, setValues] = useState({

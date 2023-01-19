@@ -1,4 +1,5 @@
 import React from "react";
+import { parseCookies } from "@/helpers";
 import moment from "moment";
 import { FaImage } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -14,7 +15,7 @@ import ImageUpload from "@/components/ImageUpload";
 import styles from "@/styles/Form.module.css";
 import Image from "next/image";
 
-const EditEventPage = ({ evt }) => {
+const EditEventPage = ({ evt, token }) => {
   const [values, setValues] = useState({
     name: evt.name,
     performers: evt.performers,
@@ -47,11 +48,15 @@ const EditEventPage = ({ evt }) => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(values),
     });
 
     if (!res.ok) {
+      if (res.status === 403 || res.status === 401) {
+        toast.error("Not Authorized");
+      }
       toast.error("Something went wrong");
     } else {
       const evt = await res.json();
@@ -65,11 +70,11 @@ const EditEventPage = ({ evt }) => {
   };
 
   const imageUploaded = async (e) => {
-    const res = await fetch(`${API_URL}/events/${evt.id}`)
-    const data = await res.json()
-    setImagePreview(data.image.formats.thumbnail.url)
-    setShowModal(false)
-  }
+    const res = await fetch(`${API_URL}/events/${evt.id}`);
+    const data = await res.json();
+    setImagePreview(data.image.formats.thumbnail.url);
+    setShowModal(false);
+  };
 
   return (
     <Layout title="Edit event">
@@ -163,13 +168,16 @@ const EditEventPage = ({ evt }) => {
       )}
 
       <div>
-        <button className="btn-secondary btn-icon" onClick={()=>setShowModal(true)}>
+        <button
+          className="btn-secondary btn-icon"
+          onClick={() => setShowModal(true)}
+        >
           <FaImage /> Set image
         </button>
       </div>
 
-      <Modal show={showModal} onClose={()=>setShowModal(false)}>
-        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded}/>
+      <Modal show={showModal} onClose={() => setShowModal(false)}>
+        <ImageUpload evtId={evt.id} imageUploaded={imageUploaded} token={token}/>
       </Modal>
     </Layout>
   );
@@ -178,15 +186,15 @@ const EditEventPage = ({ evt }) => {
 export default EditEventPage;
 
 export async function getServerSideProps({ params: { id }, req }) {
+  const { token } = parseCookies(req);
   const res = await fetch(`${API_URL}/events/${id}`);
 
   const evt = await res.json();
 
-  console.log(req.headers.cookie)
-
   return {
     props: {
       evt: evt,
+      token,
     },
   };
 }

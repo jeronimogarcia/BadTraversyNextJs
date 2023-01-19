@@ -26,6 +26,9 @@ const Header = () => {
               <li>
                 <Link href="/events/add">Add Event</Link>
               </li>
+              <li>
+                <Link href="/account/dashboard">Dashboard</Link>
+              </li>
               <button
                 onClick={() => logout()}
                 className="btn-secondary btn-icon"
