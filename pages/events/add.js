@@ -1,6 +1,7 @@
-import React from 'react';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { parseCookies } from "@/helpers";
+import React from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -8,8 +9,9 @@ import { API_URL } from "@/config/index";
 
 import Layout from "@/components/layouts/Layout";
 import styles from "@/styles/Form.module.css";
+import { getServerSideProps } from ".";
 
-const AddEventPage = () => {
+const AddEventPage = ({ token }) => {
   const [values, setValues] = useState({
     name: "",
     performers: "",
@@ -25,25 +27,32 @@ const AddEventPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const hasEmptyFields = Object.values(values).some(element => element === '')
+    const hasEmptyFields = Object.values(values).some(
+      (element) => element === ""
+    );
 
-    if(hasEmptyFields){
-      toast.error('Please fill all fields')
+    if (hasEmptyFields) {
+      toast.error("Please fill all fields");
     }
 
     const res = await fetch(`${API_URL}/events`, {
-      method: 'POST',
-      headers:{
-        'Content-Type': 'application/json'
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(values)
-    })
+      body: JSON.stringify(values),
+    });
 
-    if(!res.ok){
-      toast.error('Something went wrong')
+    if (!res.ok) {
+      if (res.status === 403 || res.status === 401) {
+        toast.error("No token included");
+        return;
+      }
+      toast.error("Something went wrong");
     } else {
-      const evt = await res.json()
-      router.push(`/events/${evt.slug}`)
+      const evt = await res.json();
+      router.push(`/events/${evt.slug}`);
     }
   };
 
@@ -56,7 +65,7 @@ const AddEventPage = () => {
     <Layout title="Add new event">
       <Link href="/events">Go Back</Link>
       <h1>Add Event</h1>
-      <ToastContainer/>
+      <ToastContainer />
       <form onSubmit={handleSubmit} className={styles.form}>
         <div className={styles.grid}>
           <div>
@@ -138,3 +147,13 @@ const AddEventPage = () => {
 };
 
 export default AddEventPage;
+
+export async function getServerSideProps({ req }) {
+  const { token } = parseCookies(req);
+
+  return {
+    props: {
+      token,
+    },
+  };
+}
